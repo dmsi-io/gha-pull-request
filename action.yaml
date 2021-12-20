@@ -32,12 +32,15 @@ runs:
     - name: Get Branch Name
       id: branch
       run: |
-        if [[ ! z "${{ inputs.branch_name }}" ]]; then
+        if [ ! z "${{ inputs.branch_name }}" ]; then
           echo "::set-output name=name::${{ inputs.branch_name }}"
-        elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          echo "::set-output name=name::${{ inputs.head_ref }}"
-        elif [[ "${{ github.event_name }}" == "push" ]]; then
-          echo "::set-output name=name::${{ inputs.ref_name }}"
+
+        elif [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "::set-output name=name::${{ github.head_ref }}"
+
+        elif [ "${{ github.event_name }}" = "push" ]; then
+          echo "::set-output name=name::${{ github.ref_name }}"
+
         fi
       shell: bash
 
