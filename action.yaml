@@ -37,7 +37,7 @@ runs:
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         message: |
           Jira Tickets: ${{ steps.issues.outputs.issue-tags }}
-          Feature Branch: ${{ inputs.url }}${{ endpoint }}
+          Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
 
     - run: echo ${{ steps.pr-comment-outputs.comment-created }}
       shell: bash
