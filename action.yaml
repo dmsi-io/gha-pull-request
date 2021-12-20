@@ -40,6 +40,7 @@ runs:
       id: jira-links
       run: |
         ISSUES="${{ steps.issues.outputs.issue-tags }}"
+        ISSUE_STRING=""
 
         for issue in ${ISSUES//,/ }
         do
