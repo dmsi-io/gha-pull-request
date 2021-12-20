@@ -9,10 +9,10 @@ inputs:
     description: 'GitHub Actions Access Username'
     required: false
 
-  branch-name:
+  branch_name:
     description: 'Branch Name'
     required: false
-    default: ${{ github.ref_name }}
+    default: ${{ github.head_ref }}
 
   url: 
     description: 'URL to use in feature branch PR comment'
@@ -28,16 +28,14 @@ runs:
     - name: Extract Issue Tags
       id: issues
       uses: Renddslow/prepare-branch-commit@v1.0.1
+      with:
+        branch-name: ${{ inputs.branch_name }}
 
     - name: Add PR comment
       uses: mshick/add-pr-comment@v1
-      id: pr-comment
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         message: |
           Jira Tickets: ${{ steps.issues.outputs.issue-tags }}
           Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
-
-    - run: echo ${{ steps.pr-comment-outputs.comment-created }}
-      shell: bash
