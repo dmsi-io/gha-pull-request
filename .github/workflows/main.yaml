@@ -2,6 +2,7 @@ name: Test gha-pull-request
 
 on: 
   - push
+  - pull_request
 
 jobs:
   issue-tags:

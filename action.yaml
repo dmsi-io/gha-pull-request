@@ -9,11 +9,6 @@ inputs:
     description: 'GitHub Actions Access Username'
     required: false
 
-  branch_name:
-    description: 'Branch Name'
-    required: false
-    default: ${{ github.head_ref }}
-
   jira_url:
     description: 'Link to hosted Jira instance'
     required: false
@@ -30,11 +25,17 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Extract Issue Tags
+    - name: Extract Issue Tags (Pull Request)
       id: issues
       uses: Renddslow/prepare-branch-commit@v1.0.1
       with:
-        branch-name: ${{ inputs.branch_name }}
+        branch-name: ${{ inputs.head_ref }}
+
+    - name: Extract Issue Tags (Commit Push)
+      id: issues
+      uses: Renddslow/prepare-branch-commit@v1.0.1
+      with:
+        branch-name: ${{ inputs.ref_name }}
 
     - name: Prepare Jira Links
       id: jira-links
