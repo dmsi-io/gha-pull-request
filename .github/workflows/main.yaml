@@ -2,7 +2,7 @@ name: Test gha-pull-request
 
 on: 
   - push
-  - pull_request
+  # - pull_request
 
 jobs:
   issue-tags:
@@ -20,3 +20,4 @@ jobs:
           GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
           url: 'https://knox-190.agility.dmsi.io'
           endpoint: '/door-maintenance'
+          branch_name: 'feature/KNOX-190-DEN-285'
