@@ -13,10 +13,17 @@ inputs:
     description: 'Branch Name'
     required: false
 
-  jira_url:
+  JIRA_BASE_URL: 
     description: 'Link to hosted Jira instance'
     required: false
-    default: 'https://dmsidmsi.atlassian.net/browse'
+
+  JIRA_USER_EMAIL:
+    description: 'User email to use for managing Jira API'
+    required: false
+
+  JIRA_API_TOKEN: 
+    description: 'API Token to authorize Jira'
+    required: false
 
   url: 
     description: 'URL to use in feature branch PR comment'
@@ -56,10 +63,14 @@ runs:
         ISSUES="${{ steps.issues.outputs.issue-tags }}"
         ISSUE_STRING=""
 
-        for issue in ${ISSUES//,/ }
-        do
-          ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.jira_url }}/$issue)]"
-        done
+        if [ -n "${{ inputs.JIRA_BASE_URL }} "]; then
+          for issue in ${ISSUES//,/ }
+          do
+            ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.jira_url }}/browse/$issue)]"
+          done
+        else
+          ISSUE_STRING="$ISSUES"
+        fi
 
         echo "::set-output name=issue-string::$ISSUE_STRING"
       shell: bash
@@ -72,3 +83,17 @@ runs:
         message: |
           Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
           Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
+
+    - name: Continue with Jira Automation
+      if: inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
+      id: jira
+      run: echo "::set-output name=continue::true"
+      shell: bash
+
+    - name: Jira Login
+      if: steps.jira.outputs.continue == 'true'
+      uses: atlassian/gajira-login@master
+      env:
+        JIRA_BASE_URL: ${{ inputs.JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ inputs.JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
