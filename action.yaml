@@ -63,7 +63,7 @@ runs:
         ISSUES="${{ steps.issues.outputs.issue-tags }}"
         ISSUE_STRING=""
 
-        if [ -n "${{ inputs.JIRA_BASE_URL }} "]; then
+        if [ -n "${{ inputs.JIRA_BASE_URL }}" ]; then
           for issue in ${ISSUES//,/ }
           do
             ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.jira_url }}/browse/$issue)]"
