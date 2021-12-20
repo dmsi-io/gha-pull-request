@@ -21,6 +21,6 @@ jobs:
           url: 'https://knox-190.${{ secrets.TOP_LEVEL_DOMAIN }}'
           endpoint: '/door-maintenance'
           branch_name: 'feature/KNOX-190-KNOX-27'
-          JIRA_BASE_URL: 'https://dmsidmsi.atlassian.net'
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}

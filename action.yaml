@@ -83,6 +83,7 @@ runs:
         message: |
           Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
           Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
+          Jira: ${{ inputs.JIRA_BASE_URL }}
 
     - name: Continue with Jira Automation
       if: inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
