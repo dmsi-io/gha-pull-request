@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Test gha-pull-request
     steps:
-      - name: Print Context
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: echo "$GITHUB_CONTEXT"
 
       - name: Test gha-pull-request
