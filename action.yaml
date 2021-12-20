@@ -1,0 +1,43 @@
+name: 'Pull Request Actions'
+description: 'This action will facilitate adding feature branch URLs to Pull Requests and Jira Tickets'
+inputs:
+  GHA_ACCESS_TOKEN:
+    description: 'GitHub Actions Access Token'
+    required: false
+
+  GHA_ACCESS_USER: 
+    description: 'GitHub Actions Access Username'
+    required: false
+
+  branch-name:
+    description: 'Branch Name'
+    required: false
+    default: ${{ github.ref_name }}
+
+  url: 
+    description: 'URL to use in feature branch PR comment'
+    required: true
+
+  endpoint:
+    description: 'Endpoint to append to the feature branch URL'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Extract Issue Tags
+      id: issues
+      uses: Renddslow/prepare-branch-commit@v1.0.1
+
+    - name: Add PR comment
+      uses: mshick/add-pr-comment@v1
+      id: pr-comment
+      with:
+        repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
+        repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
+        message: |
+          Jira Tickets: ${{ steps.issues.outputs.issue-tags }}
+          Feature Branch: ${{ inputs.url }}${{ endpoint }}
+
+    - run: echo ${{ steps.pr-comment-outputs.comment-created }}
+      shell: bash

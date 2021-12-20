@@ -1,0 +1,20 @@
+name: Test gha-pull-request
+
+on: 
+  - push
+  - pull_request
+
+jobs:
+  issue-tags:
+    runs-on: ubuntu-latest
+    name: Test gha-pull-request
+    steps:
+      - name: Print Context
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Test gha-pull-request
+        uses: dmsi-io/gha-pull-request@feature/KNOX-190
+        with:
+          GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
+          url: 'https://knox-190.agility.dmsi.io'
+          endpoint: '/door-maintenance'
