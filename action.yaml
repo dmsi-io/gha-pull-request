@@ -101,5 +101,5 @@ runs:
     - name: Comment on issue
       uses: atlassian/gajira-comment@master
       with:
-        issue: KNOX-190
+        issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
