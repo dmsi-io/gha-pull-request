@@ -14,6 +14,11 @@ inputs:
     required: false
     default: ${{ github.head_ref }}
 
+  jira_url:
+    description: 'Link to hosted Jira instance'
+    required: false
+    default: 'https://dmsidmsi.atlassian.net/browse'
+
   url: 
     description: 'URL to use in feature branch PR comment'
     required: true
@@ -31,11 +36,24 @@ runs:
       with:
         branch-name: ${{ inputs.branch_name }}
 
+    - name: Prepare Jira Links
+      id: jira-links
+      run: |
+        ISSUES="${{ steps.issues.outputs.issue-tags }}"
+
+        for issue in ${ISSUES//,/ }
+        do
+          ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.jira_url }}/$issue)]"
+        done
+
+        echo "::set-output name=issue-string::$ISSUE_STRING"
+      shell: bash
+
     - name: Add PR comment
       uses: mshick/add-pr-comment@v1
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         message: |
-          Jira Tickets: ${{ steps.issues.outputs.issue-tags }}
+          Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
           Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
