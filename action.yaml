@@ -97,3 +97,9 @@ runs:
         JIRA_BASE_URL: ${{ inputs.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ inputs.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
+
+    - name: Comment on issue
+      uses: atlassian/gajira-comment@master
+      with:
+        issue: KNOX-190
+        comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
