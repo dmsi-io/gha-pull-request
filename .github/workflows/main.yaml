@@ -18,7 +18,7 @@ jobs:
         uses: dmsi-io/gha-pull-request@feature/KNOX-190
         with:
           GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
-          url: 'https://knox-190.agility.dmsi.io'
+          url: 'https://knox-190.${{ secrets.TOP_LEVEL_DOMAIN }}'
           endpoint: '/door-maintenance'
           branch_name: 'feature/KNOX-190-KNOX-27'
           JIRA_BASE_URL: 'https://dmsidmsi.atlassian.net'
