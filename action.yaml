@@ -25,6 +25,11 @@ inputs:
     description: 'API Token to authorize Jira'
     required: false
 
+  allow-repeats:
+    description: "Allow messages to be repeated."
+    required: false
+    default: 'false'
+
   url: 
     description: 'URL to use in feature branch PR comment'
     required: true
@@ -80,6 +85,7 @@ runs:
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
+        allow-repeats: ${{ inputs.allow-repeats }}
         message: |
           Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
           Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
@@ -103,3 +109,4 @@ runs:
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
+        allow-repeats: ${{ inputs.allow-repeats }}
