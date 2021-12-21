@@ -103,4 +103,3 @@ runs:
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
-        allow-repeats: true
