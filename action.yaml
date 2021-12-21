@@ -103,18 +103,3 @@ runs:
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
-
-    - name: Setup Jira CLI
-      uses: atlassian/gajira-cli@master
-      with:
-        version: 2.0.2
-
-    - name: Get Comments
-      run: jira --issue=${{ steps.issues.outputs.issue-tags }}
-      shell: bash
-
-    # - name: Comment on issue
-    #   uses: dmsi-io/gajira-comment@multiple-issue-comments
-    #   with:
-    #     issue: ${{ steps.issues.outputs.issue-tags }}
-    #     comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
