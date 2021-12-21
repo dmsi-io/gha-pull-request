@@ -105,7 +105,7 @@ runs:
         JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
 
     - name: Comment on issue
-      uses: dmsi-io/gajira-comment@multiple-issue-comments
+      uses: dmsi-io/gajira-comment@master
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
