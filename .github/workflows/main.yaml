@@ -2,25 +2,18 @@ name: Test gha-pull-request
 
 on: 
   - push
-  # - pull_request
 
 jobs:
   issue-tags:
     runs-on: ubuntu-latest
     name: Test gha-pull-request
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Test gha-pull-request
         uses: dmsi-io/gha-pull-request@feature/KNOX-190
         with:
           GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
           url: 'https://knox-190.${{ secrets.TOP_LEVEL_DOMAIN }}'
           endpoint: '/door-maintenance'
-          branch_name: 'feature/KNOX-999'
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
