@@ -81,9 +81,8 @@ runs:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         message: |
-          Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
           Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
-          Jira: ${{ inputs.JIRA_BASE_URL }}
+          Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
 
     - name: Continue with Jira Automation
       if: inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
@@ -98,6 +97,21 @@ runs:
         JIRA_BASE_URL: ${{ inputs.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ inputs.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
+
+    - name: Comment on issue
+      uses: dmsi-io/gajira-comment@multiple-issue-comments
+      with:
+        issue: ${{ steps.issues.outputs.issue-tags }}
+        comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
+
+    - name: Setup Jira CLI
+      uses: atlassian/gajira-cli@master
+      with:
+        version: 2.0.2
+
+    - name: Get Comments
+      run: jira --issue=${{ steps.issues.outputs.issue-tags }}
+      shell: bash
 
     # - name: Comment on issue
     #   uses: dmsi-io/gajira-comment@multiple-issue-comments
