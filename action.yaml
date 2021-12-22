@@ -81,7 +81,8 @@ runs:
       shell: bash
 
     - name: Add PR comment
-      uses: mshick/add-pr-comment@v1
+      # Commit equivalent to https://github.com/mshick/add-pr-comment/releases/tag/v1
+      uses: mshick/add-pr-comment@5cd99bf
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
