@@ -1,0 +1,114 @@
+name: 'Pull Request Actions'
+description: 'This action will facilitate adding feature branch URLs to Pull Requests and Jira Tickets'
+inputs:
+  GHA_ACCESS_TOKEN:
+    description: 'GitHub Actions Access Token'
+    required: false
+
+  GHA_ACCESS_USER: 
+    description: 'GitHub Actions Access Username'
+    required: false
+
+  branch_name:
+    description: 'Branch Name'
+    required: false
+
+  JIRA_BASE_URL: 
+    description: 'Link to hosted Jira instance'
+    required: false
+
+  JIRA_USER_EMAIL:
+    description: 'User email to use for managing Jira API'
+    required: false
+
+  JIRA_API_TOKEN: 
+    description: 'API Token to authorize Jira'
+    required: false
+
+  allow-repeats:
+    description: "Allow messages to be repeated."
+    required: false
+    default: 'false'
+
+  url: 
+    description: 'URL to use in feature branch PR comment'
+    required: true
+
+  endpoint:
+    description: 'Endpoint to append to the feature branch URL'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get Branch Name
+      id: branch
+      run: |
+        if [ -n "${{ inputs.branch_name }}" ]; then
+          echo "::set-output name=name::${{ inputs.branch_name }}"
+
+        elif [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "::set-output name=name::${{ github.head_ref }}"
+
+        elif [ "${{ github.event_name }}" = "push" ]; then
+          echo "::set-output name=name::${{ github.ref_name }}"
+
+        fi
+      shell: bash
+
+    - name: Extract Issue Tags
+      id: issues
+      uses: Renddslow/prepare-branch-commit@v1.0.1
+      with:
+        branch-name: ${{ steps.branch.outputs.name }}
+
+    - name: Prepare Jira Links
+      id: jira-links
+      run: |
+        ISSUES="${{ steps.issues.outputs.issue-tags }}"
+        ISSUE_STRING=""
+
+        if [ -n "${{ inputs.JIRA_BASE_URL }}" ]; then
+          for issue in ${ISSUES//,/ }
+          do
+            ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.JIRA_BASE_URL }}/browse/$issue)]"
+          done
+        else
+          ISSUE_STRING="$ISSUES"
+        fi
+
+        echo "::set-output name=issue-string::$ISSUE_STRING"
+      shell: bash
+
+    - name: Add PR comment
+      # Commit equivalent to https://github.com/mshick/add-pr-comment/releases/tag/v1
+      uses: mshick/add-pr-comment@5cd99bf9c186219af43341076f1fe9c09e5a9934
+      with:
+        repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
+        repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
+        allow-repeats: ${{ inputs.allow-repeats }}
+        message: |
+          Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
+          Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
+
+    - name: Continue with Jira Automation
+      if: inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
+      id: jira
+      run: echo "::set-output name=continue::true"
+      shell: bash
+
+    - name: Jira Login
+      if: steps.jira.outputs.continue == 'true'
+      uses: atlassian/gajira-login@master
+      env:
+        JIRA_BASE_URL: ${{ inputs.JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ inputs.JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ inputs.JIRA_API_TOKEN }}
+
+    - name: Comment on issue
+      if: steps.jira.outputs.continue == 'true'
+      uses: dmsi-io/gajira-comment@master
+      with:
+        issue: ${{ steps.issues.outputs.issue-tags }}
+        comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
+        allow-repeats: ${{ inputs.allow-repeats }}
