@@ -32,7 +32,8 @@ inputs:
 
   url: 
     description: 'URL to use in feature branch PR comment'
-    required: true
+    required: false
+    default: ''
 
   endpoint:
     description: 'Endpoint to append to the feature branch URL'
@@ -80,19 +81,29 @@ runs:
         echo "::set-output name=issue-string::$ISSUE_STRING"
       shell: bash
 
+    - name: Prepare PR Comment
+      id: pr-comment
+      run: |
+        OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
+
+        if [ -n "${{ inputs.url }}" ]; then
+          OUTPUT_STRING="$OUTPUT_STRING\n\nFeature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
+        fi
+        echo "::set-output name=comment-string::$ISSUE_STRING"
+      shell: bash
+
     - name: Add PR comment
       # Commit equivalent to https://github.com/mshick/add-pr-comment/releases/tag/v1
+      if: steps.pr-comment.outputs.comment-string != ''
       uses: mshick/add-pr-comment@5cd99bf9c186219af43341076f1fe9c09e5a9934
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         allow-repeats: ${{ inputs.allow-repeats }}
-        message: |
-          Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}
-          Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}
+        message: ${{ steps.pr-comment.outputs.comment-string }}
 
     - name: Continue with Jira Automation
-      if: inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
+      if: inputs.url != '' && inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
       id: jira
       run: echo "::set-output name=continue::true"
       shell: bash

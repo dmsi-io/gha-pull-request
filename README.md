@@ -25,7 +25,6 @@ The URL will be identical to the one populating the GitHub comment.
   uses: dmsi-io/gha-pull-request@v1
   with:
     GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
-    url: ${{ steps.deploy.outputs.url }}
     JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
     JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
     JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
@@ -35,9 +34,18 @@ The URL will be identical to the one populating the GitHub comment.
 
 ### Optional Inputs
 
+#### URL
+
+Used to specify a URL to use in feature branch PR comment. Used when the acting repo does branch-based deployment.
+
+```yaml
+  with:
+    url: ${{ steps.deploy.outputs.url }}
+```
+
 #### Endpoint
- 
-Used to specify a an endpoint to append to the end of the base URL. Mainly used if the acting repo is deployed under a specific endpoint prefix.
+
+Used to specify an endpoint to append to the end of the base URL. Mainly used if the acting repo is deployed under a specific endpoint prefix.
 
 ```yaml
   with:
@@ -46,7 +54,7 @@ Used to specify a an endpoint to append to the end of the base URL. Mainly used 
 
 #### Branch Name
  
-By default this action will pull in the branch name based on whether the triggering webhook is a `push` or `pull_request`. However, this optional input allows the user to override this default and provide any branch name to use. 
+By default, this action will pull in the branch name based on whether the triggering webhook is a `push` or `pull_request`. However, this optional input allows the user to override this default and provide any branch name to use. 
 
 ```yaml
   with:
