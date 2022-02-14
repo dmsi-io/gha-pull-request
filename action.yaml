@@ -90,7 +90,7 @@ runs:
 
         if [ -n "${{ inputs.url }}" ]; then
           FEATURE_STRING="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
-          if [ -n $OUTPUT_STRING ]; then
+          if [ -n "$OUTPUT_STRING" ]; then
             OUTPUT_STRING="$OUTPUT_STRING\n\n$FEATURE_STRING"
           else
             OUTPUT_STRING="$FEATURE_STRING"
