@@ -84,10 +84,17 @@ runs:
     - name: Prepare PR Comment
       id: pr-comment
       run: |
-        OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
+        if [ -n "${{ steps.jira-links.outputs.issue-string }}" ]; then
+          OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
+        fi
 
         if [ -n "${{ inputs.url }}" ]; then
-          OUTPUT_STRING="$OUTPUT_STRING\n\nFeature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
+          FEATURE_STRING="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
+          if [ -n $OUTPUT_STRING ]; then
+            OUTPUT_STRING="$OUTPUT_STRING\n\n$FEATURE_STRING"
+          else
+            OUTPUT_STRING="$FEATURE_STRING"
+          fi
         fi
         echo "::set-output name=comment-string::$OUTPUT_STRING"
       shell: bash
