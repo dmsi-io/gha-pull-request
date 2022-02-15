@@ -86,9 +86,9 @@ runs:
       run: |
         if [ -n "${{ steps.jira-links.outputs.issue-string }}" ] && [ -n "${{ inputs.url }}" ]; then
           OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}\n\nFeature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
-        elif [ -n "${{ inputs.url }}" ]; then
+        elif [ -n "${{ steps.jira-links.outputs.issue-string }}" ]; then
           OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
-        else
+        elif [ -n "${{ inputs.url }}" ]; then
           OUTPUT_STRING="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
         fi
         echo "::set-output name=comment-string::$OUTPUT_STRING"
