@@ -1,0 +1,20 @@
+name: 'Run gha-pull-request'
+
+on:
+  - pull_request
+
+jobs:
+  test-pr:
+    name: 'Run gha-pull-request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run gha-pull-request
+        uses: dmsi-io/gha-pull-request@main
+        with:
+          GHA_ACCESS_TOKEN: ${{ secrets.PUBLIC_GHA_ACCESS_TOKEN }}
+          GHA_ACCESS_USER: ${{ secrets.PUBLIC_GHA_ACCESS_USER }}
+          # Following values are intentional and subject to change for testing purposes
+          JIRA_BASE_URL: https://example.com
+          branch_name: feature/JIRA-123-JIRA-321
+          url: https://example.com
+          endpoint: /example

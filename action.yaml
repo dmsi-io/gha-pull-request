@@ -5,7 +5,7 @@ inputs:
     description: 'GitHub Actions Access Token'
     required: false
 
-  GHA_ACCESS_USER: 
+  GHA_ACCESS_USER:
     description: 'GitHub Actions Access Username'
     required: false
 
@@ -13,7 +13,7 @@ inputs:
     description: 'Branch Name'
     required: false
 
-  JIRA_BASE_URL: 
+  JIRA_BASE_URL:
     description: 'Link to hosted Jira instance'
     required: false
 
@@ -21,16 +21,16 @@ inputs:
     description: 'User email to use for managing Jira API'
     required: false
 
-  JIRA_API_TOKEN: 
+  JIRA_API_TOKEN:
     description: 'API Token to authorize Jira'
     required: false
 
   allow-repeats:
-    description: "Allow messages to be repeated."
+    description: 'Allow messages to be repeated.'
     required: false
     default: 'false'
 
-  url: 
+  url:
     description: 'URL to use in feature branch PR comment'
     required: false
     default: ''
@@ -72,7 +72,7 @@ runs:
         if [ -n "${{ inputs.JIRA_BASE_URL }}" ]; then
           for issue in ${ISSUES//,/ }
           do
-            ISSUE_STRING="$ISSUE_STRING [[$issue](${{ inputs.JIRA_BASE_URL }}/browse/$issue)]"
+            ISSUE_STRING+=" [[$issue](${{ inputs.JIRA_BASE_URL }}/browse/$issue)]"
           done
         else
           ISSUE_STRING="$ISSUES"
@@ -84,13 +84,20 @@ runs:
     - name: Prepare PR Comment
       id: pr-comment
       run: |
-        if [ -n "${{ steps.jira-links.outputs.issue-string }}" ] && [ -n "${{ inputs.url }}" ]; then
-          OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}\n\nFeature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
-        elif [ -n "${{ steps.jira-links.outputs.issue-string }}" ]; then
-          OUTPUT_STRING="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
-        elif [ -n "${{ inputs.url }}" ]; then
-          OUTPUT_STRING="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
+        OUTPUT_STRING=""
+
+        if [ -n "${{ steps.jira-links.outputs.issue-string }}" ]; then
+          OUTPUT_STRING+="Jira Tickets: ${{ steps.jira-links.outputs.issue-string }}"
         fi
+
+        if [ -n "${{ steps.jira-links.outputs.issue-string }}" ] && [ -n "${{ inputs.url }}" ]; then
+          OUTPUT_STRING+="<br/><br/>"
+        fi
+
+        if [ -n "${{ inputs.url }}" ]; then
+          OUTPUT_STRING+="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
+        fi
+
         echo "::set-output name=comment-string::$OUTPUT_STRING"
       shell: bash
 
