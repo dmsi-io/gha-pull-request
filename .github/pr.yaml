@@ -1,11 +1,11 @@
-name: 'Test gha-pull-request'
+name: 'Run gha-pull-request'
 
 on:
   - pull_request
 
 jobs:
   test-pr:
-    name: 'Test gha-pull-request'
+    name: 'Run gha-pull-request'
     runs-on: ubuntu-latest
     steps:
       - name: Run gha-pull-request
