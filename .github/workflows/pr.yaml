@@ -14,6 +14,6 @@ jobs:
           GHA_ACCESS_TOKEN: ${{ secrets.PUBLIC_GHA_ACCESS_TOKEN }}
           GHA_ACCESS_USER: ${{ secrets.PUBLIC_GHA_ACCESS_USER }}
           JIRA_BASE_URL: https://example.com
-          branch_name: feature/JIRA-123
+          branch_name: feature/JIRA-123-JIRA-321
           url: https://example.com
           endpoint: /example
