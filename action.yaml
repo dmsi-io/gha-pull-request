@@ -91,7 +91,7 @@ runs:
         fi
 
         if [ -n "${{ steps.jira-links.outputs.issue-string }}" ] && [ -n "${{ inputs.url }}" ]; then
-          OUTPUT_STRING+="\n\n"
+          OUTPUT_STRING+="<br/><br/>"
         fi
 
         if [ -n "${{ inputs.url }}" ]; then
