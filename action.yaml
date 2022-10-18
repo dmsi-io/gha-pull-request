@@ -46,13 +46,13 @@ runs:
       id: branch
       run: |
         if [ -n "${{ inputs.branch_name }}" ]; then
-          echo "::set-output name=name::${{ inputs.branch_name }}"
+          echo "name=${{ inputs.branch_name }}" >> $GITHUB_OUTPUT
 
         elif [ "${{ github.event_name }}" = "pull_request" ]; then
-          echo "::set-output name=name::${{ github.head_ref }}"
+          echo "name=${{ github.head_ref }}" >> $GITHUB_OUTPUT
 
         elif [ "${{ github.event_name }}" = "push" ]; then
-          echo "::set-output name=name::${{ github.ref_name }}"
+          echo "name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
 
         fi
       shell: bash
@@ -78,7 +78,7 @@ runs:
           ISSUE_STRING="$ISSUES"
         fi
 
-        echo "::set-output name=issue-string::$ISSUE_STRING"
+        echo "issue-string=$ISSUE_STRING" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Prepare PR Comment
@@ -98,7 +98,7 @@ runs:
           OUTPUT_STRING+="Feature Branch: ${{ inputs.url }}${{ inputs.endpoint }}"
         fi
 
-        echo "::set-output name=comment-string::$OUTPUT_STRING"
+        echo "comment-string=$OUTPUT_STRING" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Add PR comment
@@ -114,7 +114,7 @@ runs:
     - name: Continue with Jira Automation
       if: inputs.url != '' && inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
       id: jira
-      run: echo "::set-output name=continue::true"
+      run: echo "continue=true" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Jira Login
