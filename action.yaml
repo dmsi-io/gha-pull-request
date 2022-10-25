@@ -59,6 +59,8 @@ runs:
         with open(env_file, "a") as output_file:
             output_file.write("branch=%s" % branch)
       shell: python
+      env:
+        GITHUB_OUTPUT: $GITHUB_OUTPUT
 
     - name: Extract Issue Tags
       id: issues
