@@ -25,8 +25,6 @@ jobs:
             branch = "${{ github.ref_name }}".upper()
 
           with open(env_file, "a") as output_file:
-            print(env_file)
-            print("branch=%s" % branch)
             output_file.write("branch=%s" % branch)
         shell: python
         env:
