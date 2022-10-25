@@ -57,7 +57,7 @@ runs:
           branch = "${{ github.ref_name }}".upper()
         
         with open(env_file, "a") as output_file:
-            output_file.write(f"branch={branch}")
+            output_file.write("branch=%s" % branch)
       shell: python
 
     - name: Extract Issue Tags
