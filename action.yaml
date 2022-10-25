@@ -59,7 +59,7 @@ runs:
 
     - name: Extract Issue Tags
       id: issues
-      uses: Renddslow/prepare-branch-commit@v1.0.1
+      uses: Renddslow/prepare-branch-commit@v1
       with:
         branch-name: ${{ steps.branch.outputs.name }}
 
@@ -119,7 +119,7 @@ runs:
 
     - name: Jira Login
       if: steps.jira.outputs.continue == 'true'
-      uses: atlassian/gajira-login@master
+      uses: atlassian/gajira-login@90a599561baaf8c05b080645ed73db7391c246ed
       env:
         JIRA_BASE_URL: ${{ inputs.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ inputs.JIRA_USER_EMAIL }}
@@ -127,7 +127,7 @@ runs:
 
     - name: Comment on issue
       if: steps.jira.outputs.continue == 'true'
-      uses: dmsi-io/gajira-comment@master
+      uses: dmsi-io/gajira-comment@8ec356b5df49f1325653db7ee2da2b59a1d78203
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
