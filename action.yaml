@@ -45,17 +45,20 @@ runs:
     - name: Get Branch Name
       id: branch
       run: |
-        if [ -n "${{ inputs.branch_name }}" ]; then
-          echo "name=${{ inputs.branch_name }}" >> $GITHUB_OUTPUT
-
-        elif [ "${{ github.event_name }}" = "pull_request" ]; then
-          echo "name=${{ github.head_ref }}" >> $GITHUB_OUTPUT
-
-        elif [ "${{ github.event_name }}" = "push" ]; then
-          echo "name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-
-        fi
-      shell: bash
+        import os
+        env_file = os.getenv('GITHUB_OUTPUT')
+        
+        branch = ""
+        if len("${{ inputs.branch_name }}") > 0:
+          branch = "${{ inputs.branch_name }}".upper()
+        elif "${{ github.event_name }}" == "pull_request":
+          branch = "${{ github.head_ref }}".upper()
+        elif "${{ github.event_name }}" == "push":
+          branch = "${{ github.ref_name }}".upper()
+        
+        with open(env_file, "a") as output_file:
+            output_file.write(f"branch={branch}")
+      shell: python
 
     - name: Extract Issue Tags
       id: issues
@@ -112,7 +115,7 @@ runs:
         message: ${{ steps.pr-comment.outputs.comment-string }}
 
     - name: Continue with Jira Automation
-      if: inputs.url != '' && inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != ''
+      if: inputs.url != '' && inputs.JIRA_BASE_URL != '' && inputs.JIRA_USER_EMAIL != '' && inputs.JIRA_API_TOKEN != '' && steps.issues.outputs.issue-tags != ''
       id: jira
       run: echo "continue=true" >> $GITHUB_OUTPUT
       shell: bash
@@ -127,7 +130,7 @@ runs:
 
     - name: Comment on issue
       if: steps.jira.outputs.continue == 'true'
-      uses: dmsi-io/gajira-comment@8ec356b5df49f1325653db7ee2da2b59a1d78203
+      uses: dmsi-io/gajira-comment@v2
       with:
         issue: ${{ steps.issues.outputs.issue-tags }}
         comment: 'Feature branch has been deployed at: ${{ inputs.url }}${{ inputs.endpoint }}'
