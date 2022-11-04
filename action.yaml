@@ -64,7 +64,7 @@ runs:
 
     - name: Extract Issue Tags
       id: issues
-      uses: Renddslow/prepare-branch-commit@v1.1.2
+      uses: Renddslow/prepare-branch-commit@v1
       with:
         branch-name: ${{ steps.branch.outputs.branch_name }}
 
