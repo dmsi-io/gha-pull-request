@@ -107,9 +107,9 @@ runs:
       shell: bash
 
     - name: Add PR comment
-      # Commit equivalent to https://github.com/mshick/add-pr-comment/releases/tag/v1
+      # Commit equivalent to https://github.com/mshick/add-pr-comment/releases/tag/v2
       if: steps.pr-comment.outputs.comment-string != ''
-      uses: mshick/add-pr-comment@5cd99bf9c186219af43341076f1fe9c09e5a9934
+      uses: mshick/add-pr-comment@a65df5f64fc741e91c59b8359a4bc56e57aaf5b1
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
         repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
