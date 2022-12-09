@@ -112,7 +112,6 @@ runs:
       uses: mshick/add-pr-comment@a65df5f64fc741e91c59b8359a4bc56e57aaf5b1
       with:
         repo-token: ${{ inputs.GHA_ACCESS_TOKEN }}
-        repo-token-user-login: ${{ inputs.GHA_ACCESS_USER }}
         allow-repeats: ${{ inputs.allow-repeats }}
         message: ${{ steps.pr-comment.outputs.comment-string }}
 
